@@ -23,7 +23,7 @@ public class TodoController {
     public String todo(Model model) {
         List<TodoDto> todoDtoList = this.todoService.readAll();
         model.addAttribute("todoList", todoDtoList);
-        return "todo";
+        return "todo"; //todo.html을 오픈
     }
 
     @RequestMapping("/")
@@ -39,7 +39,7 @@ public class TodoController {
     }
 
     @PostMapping("/todo/{id}/update")
-    public String update(@PathVariable("id") Long id) {
+    public String update(@PathVariable("id") Integer id) {
         // Todo의 done 상태를 변경하는 메소드
         todoService.updateToDo(id);
         return "redirect:/todo";
@@ -47,7 +47,7 @@ public class TodoController {
     }
 
     @PostMapping("/todo/{id}/delete")
-    public String delete(@PathVariable("id") Long id) {
+    public String delete(@PathVariable("id") Integer id) {
         // TODO를 삭제하는 메소드
         todoService.deleteToDo(id);
         return "redirect:/todo";

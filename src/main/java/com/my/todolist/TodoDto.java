@@ -1,21 +1,22 @@
 package com.my.todolist;
 
 public class TodoDto {
-    private Long id;
+    private Integer id;
     private String content;
     private Boolean done;
 
-    public TodoDto(Long id, String content, Boolean done) {
+    public TodoDto(Integer id, String content, Boolean done) {
         this.id = id;
         this.content = content;
         this.done = done;
     }
+    // public TodoDto(){}
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

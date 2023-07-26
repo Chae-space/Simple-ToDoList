@@ -1,48 +1,37 @@
 package com.my.todolist;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
-import java.util.stream.IntStream;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TodoService {
-    private final List<TodoDto> todoList = new ArrayList<>();
-    private Long nextId = 1L;
+    @Autowired
+    JdbcTemplate jt;
 
     public List<TodoDto> readAll() {
-        return todoList;
+
+        var list = jt.query("SELECT * from todolist", new TodoDtoRowMapper());
+        return list;
     }
 
-    public void createToDo(String content){
+    public void createToDo(String content) {
 
-        TodoDto newTodo = new TodoDto(nextId, content, false);
-        nextId++;
-        todoList.add(newTodo);
-        System.out.println(todoList);
+        jt.update("insert into todolist(content) values(?)", content);
     }
 
-    public TodoDto updateToDo(Long id){
-        return todoList
-        .stream()
-        .filter(todoDto -> todoDto.getId().equals(id))
-        .peek(todoDto -> todoDto.setDone(!todoDto.getDone()))
-        .findFirst()
-        .orElse(null);
+    public TodoDto updateToDo(Integer id) {
+
+        jt.update("update todolist set done = !done where id =?", id);
+        var todo = jt.queryForObject("select * from todolist where id = ?", new TodoDtoRowMapper(), id);
+        return todo;
     }
 
-    public boolean deleteToDo(Long id){
-        OptionalInt idx = IntStream
-        .range(0, todoList.size())
-        .filter(i -> todoList.get(i).getId().equals(id))  
-        .findFirst();
-     if(idx.isPresent()){
-        todoList.remove(idx.getAsInt());
+    public boolean deleteToDo(Integer id) {
+
+        jt.update("delete from todolist where id = ?", id);
         return true;
-     }    
-     return false;  //Not Found
     }
-
 }
